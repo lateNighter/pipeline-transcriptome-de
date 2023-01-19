@@ -21,6 +21,16 @@ all_samples = config["control_samples"].copy()
 all_samples.update(config["treated_samples"])
 datasets = [path.basename(x).rsplit(".", 1)[0] for x in all_samples.values()]
 
+rule all:
+    input:
+        ver = "versions.txt",
+        count_tsvs = expand("counts/{sample}_salmon/quant.sf", sample=all_samples.keys()),
+        merged_tsv = "merged/all_counts.tsv",
+        coldata = "de_analysis/coldata.tsv",
+        de_params = "de_analysis/de_params.tsv",
+        res_dge = "de_analysis/results_dge.pdf",
+        dtu_pdf = "de_analysis/dtu_plots.pdf",
+
 rule dump_versions:
     output:
         ver = "versions.txt"
@@ -116,12 +126,4 @@ rule plot_dtu_res:
     {SNAKEDIR}/scripts/plot_dtu_results.R
     """
 
-rule all:
-    input:
-        ver = rules.dump_versions.output.ver,
-        count_tsvs = expand("counts/{sample}_salmon/quant.sf", sample=all_samples.keys()),
-        merged_tsv = "merged/all_counts.tsv",
-        coldata = "de_analysis/coldata.tsv",
-        de_params = "de_analysis/de_params.tsv",
-        res_dge = "de_analysis/results_dge.pdf",
-        dtu_pdf = "de_analysis/dtu_plots.pdf",
+

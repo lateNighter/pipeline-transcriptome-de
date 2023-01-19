@@ -2,9 +2,9 @@
 ## General pipeline parameters:
 
 # Name of the pipeline:
-pipeline: "pipeline-transcriptome-de_phe"
+pipeline: ""
 # ABSOLUTE path to directory holding the working directory:
-workdir_top: "Workspaces"
+workdir_top: "/tmp/repo"
 # Results directory:
 resdir: "results"
 # Repository URL:
@@ -30,7 +30,7 @@ treated_samples:
     IR2: "IR2.fq"
     IR3: "IR3.fq"
 
-alignments: ""
+alignments: "A.bam"
 
 # Minimap2 indexing options
 minimap_index_opts: ""
