@@ -30,6 +30,8 @@ treated_samples:
     IR2: "IR2.fq"
     IR3: "IR3.fq"
 
+alignments: ""
+
 # Minimap2 indexing options
 minimap_index_opts: ""
 

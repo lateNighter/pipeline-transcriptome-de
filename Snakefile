@@ -29,42 +29,9 @@ rule dump_versions:
     conda list > {output.ver} 
     """
 
-rule build_minimap_index: ## build minimap2 index
-    input:
-        genome = config["transcriptome"]
-    output:
-        index = "index/transcriptome_index.mmi"
-    params:
-        opts = config["minimap_index_opts"]
-    conda: "env.yml"
-    threads: config["threads"]
-    shell:"""
-        minimap2 -t {threads} {params.opts} -I 1000G -d {output.index} {input.genome}
-    """
-
-rule map_reads: ## map reads using minimap2
-    input:
-       index = rules.build_minimap_index.output.index,
-       fastq = lambda wildcards: all_samples[wildcards.sample]
-    output:
-       bam = "alignments/{sample}.bam",
-       sbam = "sorted_alignments/{sample}.bam",
-    params:
-        opts = config["minimap2_opts"],
-        msec = config["maximum_secondary"],
-        psec = config["secondary_score_ratio"],
-    conda: "env.yml"
-    threads: config["threads"]
-    shell:"""
-    minimap2 -t {threads} -ax map-ont -p {params.psec} -N {params.msec} {params.opts} {input.index} {input.fastq}\
-    | samtools view -Sb > {output.bam};
-    samtools sort -@ {threads} {output.bam} -o {output.sbam};
-    samtools index {output.sbam};
-    """
-
 rule count_reads:
     input:
-        bam = rules.map_reads.output.bam,
+        bam = config["alignments"], 
         trs = config["transcriptome"],
     output:
         tsv = "counts/{sample}_salmon/quant.sf",
