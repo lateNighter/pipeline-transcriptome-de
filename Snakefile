@@ -41,7 +41,7 @@ rule dump_versions:
 
 rule count_reads:
     input:
-        bam = config["alignments"], 
+        bam = lambda wildcards: all_samples[wildcards.sample], 
         trs = config["transcriptome"],
     output:
         tsv = "counts/{sample}_salmon/quant.sf",
@@ -88,7 +88,7 @@ rule write_de_params:
         de_params = "de_analysis/de_params.tsv"
     run:
         d = OrderedDict()
-        d["Annotation"] = [config["annotation"]]
+        d["Annotation"] = [config["annotation"]]  #unnecessary?
         d["min_samps_gene_expr"] = [config["min_samps_gene_expr"]]
         d["min_samps_feature_expr"] = [config["min_samps_feature_expr"]]
         d["min_gene_expr"] = [config["min_gene_expr"]]
